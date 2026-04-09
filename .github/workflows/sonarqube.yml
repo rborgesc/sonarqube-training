@@ -40,7 +40,7 @@ jobs:
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         with:
           args: >
-            -Dsonar.projectKey=meu-projeto-python
+            -Dsonar.projectKey=sonar-training
             -Dsonar.sources=.
             -Dsonar.python.coverage.reportPaths=coverage.xml
             -Dsonar.exclusions=**/tests/**,**/venv/**,setup.py
