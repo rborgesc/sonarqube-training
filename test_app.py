@@ -1,5 +1,5 @@
 import unittest
-from app import calcular_desconto, verificar_idade, saudacao
+from src.app import calcular_desconto, verificar_idade, saudacao
 
 class TestApp(unittest.TestCase):
 
