@@ -32,26 +32,26 @@ def verificar_idade(idade):
         return "Acesso negado"
 
 
-def saudacao(nome):
-    """
-    Retorna uma saudação personalizada.
-    """
-    if nome:
-        return f"Olá, {nome}!"
-    else:
-        return "Olá, visitante!"
+# def saudacao(nome):
+#     """
+#     Retorna uma saudação personalizada.
+#     """
+#     if nome:
+#         return f"Olá, {nome}!"
+#     else:
+#         return "Olá, visitante!"
     
 
-# def calcular_preco_final(preco, desconto_percentual):
-#     # Bug: Se desconto_percentual for 0, ele ainda subtrai 0.0
-#     # Code Smell: Variável 'valor_desconto' não utilizada
-#     if desconto_percentual > 0:
-#         valor_desconto = preco * (desconto_percentual / 100)
-#         preco_com_desconto = preco - (preco * (desconto_percentual / 100))
-#         return preco_com_desconto
-#     else:
-#         return preco
+def calcular_preco_final(preco, desconto_percentual):
+    # Bug: Se desconto_percentual for 0, ele ainda subtrai 0.0
+    # Code Smell: Variável 'valor_desconto' não utilizada
+    if desconto_percentual > 0:
+        valor_desconto = preco * (desconto_percentual / 100)
+        preco_com_desconto = preco - (preco * (desconto_percentual / 100))
+        return preco_com_desconto
+    else:
+        return preco
     
-# def saudacao(nome):
-#     mensagem = "Olá, " + nome + "!"
-#     return mensagem # Code Smell: Variável 'mensagem' é redundante
+def saudacao(nome):
+    mensagem = "Olá, " + nome + "!"
+    return mensagem # Code Smell: Variável 'mensagem' é redundante
