@@ -35,26 +35,26 @@ def verificar_idade(idade):
         return "Acesso negado"
 
 
-# def saudacao(nome):
-#     """
-#     Retorna uma saudação personalizada.
-#     """
-#     if nome:
-#         return f"Olá, {nome}!"
-#     else:
-#         return "Olá, visitante!"
-    
-
-def calcular_preco_final(preco, desconto_percentual):
-    if desconto_percentual == 100:
-
-        return preco / 0 
-    
 def saudacao(nome):
-    mensagem = "Olá, " + nome + "!"
-    return mensagem # Code Smell: Variável 'mensagem' é redundante
+    """
+    Retorna uma saudação personalizada.
+    """
+    if nome:
+        return f"Olá, {nome}!"
+    else:
+        return "Olá, visitante!"
+    
+
+# def calcular_preco_final(preco, desconto_percentual):
+#     if desconto_percentual == 100:
+
+#         return preco / 0 
+    
+# def saudacao(nome):
+#     mensagem = "Olá, " + nome + "!"
+#     return mensagem # Code Smell: Variável 'mensagem' é redundante
 
 
-def processar_comando_usuario(comando):
-# Vulnerabilidade: Execução de comando do sistema sem sanitização
-    os.system(comando) # Risco de Command Injection
+# def processar_comando_usuario(comando):
+# # Vulnerabilidade: Execução de comando do sistema sem sanitização
+#     os.system(comando) # Risco de Command Injection
