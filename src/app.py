@@ -1,3 +1,6 @@
+
+import os
+
 def calcular_desconto(valor_compra, tipo_cliente):
     """
     Calcula o valor do desconto com base no valor da compra e tipo de cliente.
@@ -44,9 +47,14 @@ def verificar_idade(idade):
 
 def calcular_preco_final(preco, desconto_percentual):
     if desconto_percentual == 100:
-        # Isso vai causar um erro em tempo de execução (Bug)
+
         return preco / 0 
     
 def saudacao(nome):
     mensagem = "Olá, " + nome + "!"
     return mensagem # Code Smell: Variável 'mensagem' é redundante
+
+
+def processar_comando_usuario(comando):
+# Vulnerabilidade: Execução de comando do sistema sem sanitização
+    os.system(comando) # Risco de Command Injection
