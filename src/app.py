@@ -43,14 +43,9 @@ def verificar_idade(idade):
     
 
 def calcular_preco_final(preco, desconto_percentual):
-    # Bug: Se desconto_percentual for 0, ele ainda subtrai 0.0
-    # Code Smell: Variável 'valor_desconto' não utilizada
-    if desconto_percentual > 0:
-        valor_desconto = preco * (desconto_percentual / 100)
-        preco_com_desconto = preco - (preco * (desconto_percentual / 100))
-        return preco_com_desconto
-    else:
-        return preco
+    if desconto_percentual == 100:
+        # Isso vai causar um erro em tempo de execução (Bug)
+        return preco / 0 
     
 def saudacao(nome):
     mensagem = "Olá, " + nome + "!"
