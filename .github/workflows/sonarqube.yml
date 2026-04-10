@@ -1,10 +1,10 @@
 name: SonarQube Analysis (Python)
 
 on:
-  push:
+
+  pull_request:
     branches:
       - main
-  pull_request:
     types: [opened, synchronize, reopened]
 
 jobs:
