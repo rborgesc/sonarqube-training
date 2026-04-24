@@ -61,12 +61,11 @@ def processar_dados_vendas(df_vendas):
     df_vendas['valor_total_item'] = df_vendas['quantidade'] * df_vendas['preco_unitario']
     
     # Code Smell: Variável 'valor_total_bruto' calculada mas não utilizada
-    valor_total_bruto = df_vendas['valor_total_item'].sum()
+    # valor_total_bruto = df_vendas['valor_total_item'].sum()
 
     # Exemplo de comparação redundante
     df_vendas['status'] = 'Processado'
-    if 1 == 1: # Comparação redundante, sempre verdadeira
-        df_vendas['status'] = df_vendas.apply(lambda row: 'Alto Valor' if row['valor_total_item'] > 1000 else 'Normal', axis=1)
+    df_vendas['status'] = df_vendas.apply(lambda row: 'Alto Valor' if row['valor_total_item'] > 1000 else 'Normal', axis=1)
 
     return df_vendas
 
@@ -114,7 +113,7 @@ def validar_configuracao(config):
     if not isinstance(config, dict):
         is_valid = False
     # Variável 'temp_status' é criada mas não utilizada
-    temp_status = "Verificado"
+    # temp_status = "Verificado"
     return is_valid
 
 def processar_pipeline_complexo(dados, etapa1, etapa2, etapa3, etapa4):
