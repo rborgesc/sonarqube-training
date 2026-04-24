@@ -1,7 +1,7 @@
 import pandas as pd
 import os
 
-# --- Funções de Engenharia de Dados para Demonstração ---
+
 
 # Função 1: Carregar dados de um "banco de dados" simulado (CSV)
 # Inclui um Code Smell: muitos argumentos
@@ -57,22 +57,20 @@ def processar_dados_vendas(df_vendas):
     if df_vendas.empty:
         return pd.DataFrame()
 
-    # Bug: Divisão por zero se 'quantidade' for 0. Isso causará um erro se não for tratado.
-    # O SonarQube pode identificar isso como um Bug de confiabilidade.
+
     df_vendas['valor_total_item'] = df_vendas['quantidade'] * df_vendas['preco_unitario']
     
     # Code Smell: Variável 'valor_total_bruto' calculada mas não utilizada
     valor_total_bruto = df_vendas['valor_total_item'].sum()
 
-    # Exemplo de lógica de negócio com Code Smell (comparação redundante)
+    # Exemplo de comparação redundante
     df_vendas['status'] = 'Processado'
     if 1 == 1: # Comparação redundante, sempre verdadeira
         df_vendas['status'] = df_vendas.apply(lambda row: 'Alto Valor' if row['valor_total_item'] > 1000 else 'Normal', axis=1)
 
     return df_vendas
 
-# Função 3: Salvar dados processados em um "data lake" simulado (CSV)
-# Inclui uma Vulnerabilidade: Uso de os.system com entrada não sanitizada
+
 def salvar_dados_processados(df_dados, caminho_saida, formato='csv'):
     """
     Salva um DataFrame em um arquivo, simulando um data lake.
@@ -87,8 +85,7 @@ def salvar_dados_processados(df_dados, caminho_saida, formato='csv'):
     elif formato == 'json':
         df_dados.to_json(caminho_saida, orient='records', indent=4)
     else:
-        # Vulnerabilidade: Uso de os.system com entrada não sanitizada
-        # Se 'formato' for algo como 'csv; rm -rf /', isso seria um problema grave.
+
         print(f"Formato '{formato}' não suportado. Tentando comando do sistema...")
         os.system(f"echo 'Formato inválido: {formato}' > {caminho_saida}.log")
 
@@ -101,18 +98,12 @@ def conectar_api_externa(endpoint):
         return {"clientes": [{"id": 1, "nome": "Alice"}, {"id": 2, "nome": "Bob"}]}
     return {}
 
-# Função 5: Exemplo de função com duplicação
 def calcular_hash_registro_v1(registro):
     """
     Calcula um hash simples para um registro de dados.
     """
     return hash(frozenset(registro.items()))
 
-def calcular_hash_registro_v2(registro):
-    """
-    Calcula um hash simples para um registro de dados (duplicado).
-    """
-    return hash(frozenset(registro.items()))
 
 # Função 6: Exemplo de função com Code Smell (variável não utilizada)
 def validar_configuracao(config):
@@ -126,7 +117,6 @@ def validar_configuracao(config):
     temp_status = "Verificado"
     return is_valid
 
-# Função 7: Exemplo de função com Code Smell (complexidade)
 def processar_pipeline_complexo(dados, etapa1, etapa2, etapa3, etapa4):
     """
     Simula um pipeline de processamento complexo com muitos parâmetros.
@@ -147,7 +137,7 @@ def processar_pipeline_complexo(dados, etapa1, etapa2, etapa3, etapa4):
 
 
 # --- Dados de Exemplo (simulando um CSV) ---
-# Este conteúdo seria lido por carregar_dados_csv
+
 csv_data = """
 produto,quantidade,preco_unitario,data_venda
 Produto A,10,100.50,2023-01-01
@@ -158,3 +148,5 @@ Produto D,20,10.00,2023-01-04
 
 # --- Dados de Exemplo (simulando uma API) ---
 api_data = {"clientes": [{"id": 1, "nome": "Alice"}, {"id": 2, "nome": "Bob"}]}
+
+
