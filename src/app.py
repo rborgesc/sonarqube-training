@@ -1,60 +1,160 @@
-
+import pandas as pd
 import os
 
-def calcular_desconto(valor_compra, tipo_cliente):
-    """
-    Calcula o valor do desconto com base no valor da compra e tipo de cliente.
-    Clientes 'VIP' têm 10% de desconto, clientes 'REGULAR' têm 5%.
-    Compras acima de 1000 reais recebem um desconto adicional de 2%.
-    """
-    desconto_base = 0
-    desconto_adicional = 0
+# --- Funções de Engenharia de Dados para Demonstração ---
 
-    if tipo_cliente == "VIP":
-        desconto_base = 0.10
-    elif tipo_cliente == "REGULAR":
-        desconto_base = 0.05
-    else:
-        # Cliente desconhecido não recebe desconto base
-        desconto_base = 0
-
-    if valor_compra > 1000:
-        desconto_adicional = 0.02
-
-    desconto_total = valor_compra * (desconto_base + desconto_adicional)
-    return round(desconto_total, 2)
-
-def verificar_idade(idade):
+# Função 1: Carregar dados de um "banco de dados" simulado (CSV)
+# Inclui um Code Smell: muitos argumentos
+def carregar_dados_csv(caminho_arquivo, separador, encoding, colunas_selecionadas=None, nrows=None, skip_rows=None, data_types=None, parse_dates=None):
     """
-    Verifica se a idade é suficiente para acesso.
-    Idade mínima para acesso é 18 anos.
-    """
-    if idade >= 18:
-        return "Acesso permitido"
-    else:
-        return "Acesso negado"
-
-
-def saudacao(nome):
-    """
-    Retorna uma saudação personalizada.
-    """
-    if nome:
-        return f"Olá, {nome}!"
-    else:
-        return "Olá, visitante!"
+    Carrega dados de um arquivo CSV simulando uma leitura de banco de dados.
     
+    Args:
+        caminho_arquivo (str): Caminho para o arquivo CSV.
+        separador (str): Caractere separador (ex: ",", ";").
+        encoding (str): Codificação do arquivo (ex: "utf-8").
+        colunas_selecionadas (list, optional): Lista de colunas para carregar. Defaults to None.
+        nrows (int, optional): Número de linhas para ler. Defaults to None.
+        skip_rows (list, optional): Lista de linhas para pular. Defaults to None.
+        data_types (dict, optional): Dicionário de tipos de dados para colunas. Defaults to None.
+        parse_dates (list, optional): Lista de colunas para parsear como datas. Defaults to None.
 
-# def calcular_preco_final(preco, desconto_percentual):
-#     if desconto_percentual == 100:
+    Returns:
+        pd.DataFrame: DataFrame com os dados carregados.
+    """
+    try:
+        df = pd.read_csv(
+            caminho_arquivo,
+            sep=separador,
+            encoding=encoding,
+            usecols=colunas_selecionadas,
+            nrows=nrows,
+            skiprows=skip_rows,
+            dtype=data_types,
+            parse_dates=parse_dates
+        )
+        return df
+    except FileNotFoundError:
+        print(f"Erro: Arquivo {caminho_arquivo} não encontrado.")
+        return pd.DataFrame()
+    except Exception as e:
+        print(f"Erro ao carregar dados: {e}")
+        return pd.DataFrame()
 
-#         return preco / 0 
+# Função 2: Processar dados (limpeza e transformação)
+# Inclui um Bug: Divisão por zero se 'quantidade' for 0
+# Inclui um Code Smell: Variável 'valor_total_bruto' não utilizada
+def processar_dados_vendas(df_vendas):
+    """
+    Processa um DataFrame de vendas, calculando o valor total por item e aplicando regras.
     
-# def saudacao(nome):
-#     mensagem = "Olá, " + nome + "!"
-#     return mensagem # Code Smell: Variável 'mensagem' é redundante
+    Args:
+        df_vendas (pd.DataFrame): DataFrame com colunas 'produto', 'quantidade', 'preco_unitario'.
+
+    Returns:
+        pd.DataFrame: DataFrame processado com 'valor_total_item' e 'status'.
+    """
+    if df_vendas.empty:
+        return pd.DataFrame()
+
+    # Bug: Divisão por zero se 'quantidade' for 0. Isso causará um erro se não for tratado.
+    # O SonarQube pode identificar isso como um Bug de confiabilidade.
+    df_vendas['valor_total_item'] = df_vendas['quantidade'] * df_vendas['preco_unitario']
+    
+    # Code Smell: Variável 'valor_total_bruto' calculada mas não utilizada
+    valor_total_bruto = df_vendas['valor_total_item'].sum()
+
+    # Exemplo de lógica de negócio com Code Smell (comparação redundante)
+    df_vendas['status'] = 'Processado'
+    if 1 == 1: # Comparação redundante, sempre verdadeira
+        df_vendas['status'] = df_vendas.apply(lambda row: 'Alto Valor' if row['valor_total_item'] > 1000 else 'Normal', axis=1)
+
+    return df_vendas
+
+# Função 3: Salvar dados processados em um "data lake" simulado (CSV)
+# Inclui uma Vulnerabilidade: Uso de os.system com entrada não sanitizada
+def salvar_dados_processados(df_dados, caminho_saida, formato='csv'):
+    """
+    Salva um DataFrame em um arquivo, simulando um data lake.
+    
+    Args:
+        df_dados (pd.DataFrame): DataFrame a ser salvo.
+        caminho_saida (str): Caminho completo do arquivo de saída.
+        formato (str): Formato do arquivo ('csv' ou 'json').
+    """
+    if formato == 'csv':
+        df_dados.to_csv(caminho_saida, index=False)
+    elif formato == 'json':
+        df_dados.to_json(caminho_saida, orient='records', indent=4)
+    else:
+        # Vulnerabilidade: Uso de os.system com entrada não sanitizada
+        # Se 'formato' for algo como 'csv; rm -rf /', isso seria um problema grave.
+        print(f"Formato '{formato}' não suportado. Tentando comando do sistema...")
+        os.system(f"echo 'Formato inválido: {formato}' > {caminho_saida}.log")
+
+# Função 4: Simular conexão com API externa (para mockar)
+def conectar_api_externa(endpoint):
+    """
+    Simula uma conexão com uma API externa e retorna dados.
+    """
+    if endpoint == "/dados_clientes":
+        return {"clientes": [{"id": 1, "nome": "Alice"}, {"id": 2, "nome": "Bob"}]}
+    return {}
+
+# Função 5: Exemplo de função com duplicação
+def calcular_hash_registro_v1(registro):
+    """
+    Calcula um hash simples para um registro de dados.
+    """
+    return hash(frozenset(registro.items()))
+
+def calcular_hash_registro_v2(registro):
+    """
+    Calcula um hash simples para um registro de dados (duplicado).
+    """
+    return hash(frozenset(registro.items()))
+
+# Função 6: Exemplo de função com Code Smell (variável não utilizada)
+def validar_configuracao(config):
+    """
+    Valida uma configuração, mas tem uma variável não utilizada.
+    """
+    is_valid = True
+    if not isinstance(config, dict):
+        is_valid = False
+    # Variável 'temp_status' é criada mas não utilizada
+    temp_status = "Verificado"
+    return is_valid
+
+# Função 7: Exemplo de função com Code Smell (complexidade)
+def processar_pipeline_complexo(dados, etapa1, etapa2, etapa3, etapa4):
+    """
+    Simula um pipeline de processamento complexo com muitos parâmetros.
+    """
+    if etapa1:
+        if etapa2:
+            if etapa3:
+                if etapa4:
+                    return dados * 2
+                else:
+                    return dados / 2
+            else:
+                return dados + 1
+        else:
+            return dados - 1
+    else:
+        return dados
 
 
-# def processar_comando_usuario(comando):
-# # Vulnerabilidade: Execução de comando do sistema sem sanitização
-#     os.system(comando) # Risco de Command Injection
+# --- Dados de Exemplo (simulando um CSV) ---
+# Este conteúdo seria lido por carregar_dados_csv
+csv_data = """
+produto,quantidade,preco_unitario,data_venda
+Produto A,10,100.50,2023-01-01
+Produto B,5,200.00,2023-01-02
+Produto C,0,50.00,2023-01-03
+Produto D,20,10.00,2023-01-04
+"""
+
+# --- Dados de Exemplo (simulando uma API) ---
+api_data = {"clientes": [{"id": 1, "nome": "Alice"}, {"id": 2, "nome": "Bob"}]}
